@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>CHAD — paired to $HIMS</title>
+<title>CHAD</title>
 <meta name="description" content="CHAD. A memecoin on Robinhood Chain paired to tokenized Hims & Hers stock. Fees paid in $HIMS.">
 <link rel="icon" href="assets/favicon-32.png" sizes="32x32">
 <link rel="icon" href="assets/favicon-64.png" sizes="64x64">
@@ -31,6 +31,9 @@ a{color:var(--ink)}
 #loader .w{font-weight:900;font-style:italic;font-size:64px;letter-spacing:-.03em;animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{50%{opacity:.35}}
 #loader .t{font-family:Plex,monospace;color:var(--muted);font-size:13px;letter-spacing:.1em}
+#loader .bar{width:220px;height:2px;background:rgba(242,242,242,.15);overflow:hidden}
+#loader .bar i{display:block;height:100%;width:0;background:var(--ink);animation:load 3s linear forwards}
+@keyframes load{to{width:100%}}
 main{position:relative;z-index:1}
 .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
 nav{display:flex;flex-direction:column;align-items:center;gap:16px;padding:26px 0 10px}
@@ -41,6 +44,8 @@ nav .links a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:70
 nav .links a:hover{background:var(--ink);color:#000}
 nav .links a.primary{background:var(--ink);color:#000;border-color:var(--ink)}
 nav .links a.primary.off{opacity:.4;pointer-events:none}
+nav .links a#music{font-family:Plex,monospace;font-style:normal;font-weight:500}
+nav .links a#music.on{background:var(--ink);color:#000}
 .hero{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding:40px 0 70px}
 .hero h1{font-weight:900;font-style:italic;font-size:clamp(90px,15vw,190px);line-height:.85;margin:0 0 14px;letter-spacing:-.05em}
 .hero .tag{font-family:Plex,monospace;color:var(--ink2);font-size:16px;margin:0 0 22px}
@@ -115,19 +120,19 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 </style>
 </head>
 <body>
-<div id="loader"><div class="w">CHAD</div><div class="t">LOADING PROTOCOL</div></div>
+<div id="loader"><div class="w">CHAD</div><div class="bar"><i></i></div><div class="t">LOADING PROTOCOL</div></div>
 <canvas id="bg"></canvas>
 <main>
 <div class="wrap">
 <nav>
   <div class="brand"><img src="assets/favicon-64.png" alt="">CHAD</div>
-  <div class="links"><a id="navbuy" class="primary off" href="#">Buy CHAD</a><a href="#how">How it works</a><a href="#stocks">Stock pairing</a><a href="#protocol">Protocol</a><a href="#lore">Lore</a><a href="#memes">Memes</a><a href="#token">Token</a><a href="#faq">FAQ</a><a id="xlink" href="#" target="_blank" rel="noopener">X</a></div>
+  <div class="links"><a id="navbuy" class="primary off" href="#">Buy CHAD</a><a href="#how">How it works</a><a href="#stocks">Stock pairing</a><a href="#protocol">Protocol</a><a href="#lore">Lore</a><a href="#memes">Memes</a><a href="#token">Token</a><a href="#faq">FAQ</a><a id="xlink" href="#" target="_blank" rel="noopener">X</a><a id="music" href="#" role="button" aria-pressed="false">♪ Music: off</a></div>
+<audio id="bgm" src="assets/chad-loop.mp3" loop preload="auto"></audio>
 </nav>
 
 <div class="hero">
   <div>
     <h1>CHAD</h1>
-    <p class="tag">paired to <b>$HIMS</b> · fees paid in the stock · Robinhood Chain</p>
     <p>The only memecoin that pays its trading fees in tokenized men's-health stock. Hair, jawline, confidence — Hims sells the first two. CHAD is the third.</p>
     <div class="btns"><a id="buy" class="btn off" href="#">Buy CHAD</a><a class="btn ghost" href="#protocol">Run the protocol</a></div>
   </div>
@@ -246,6 +251,20 @@ const DATA = {}; // no live numbers pre-launch
     $('ca').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(CONFIG.ca);$('ca').textContent='copied';setTimeout(()=>$('ca').textContent=CONFIG.ca,900)}}
 })();
 
+// Music (loops; browsers need a gesture, so it starts on the first click/keypress unless switched off)
+const music=(()=>{
+  const a=document.getElementById('bgm'),b=document.getElementById('music');a.volume=0.55;
+  let want=true;try{want=localStorage.getItem('chad-music')!=='off'}catch(e){}
+  const paint=()=>{const on=!a.paused;b.textContent='♪ Music: '+(on?'on':'off');b.classList.toggle('on',on);b.setAttribute('aria-pressed',on)};
+  const play=()=>a.play().then(paint).catch(()=>{});
+  const tryStart=()=>{if(want)play()};
+  const gesture=()=>{if(want&&a.paused)play();removeEventListener('pointerdown',gesture);removeEventListener('keydown',gesture)};
+  addEventListener('pointerdown',gesture);addEventListener('keydown',gesture);
+  b.onclick=e=>{e.preventDefault();e.stopPropagation();if(a.paused){want=true;play()}else{want=false;a.pause();paint()}try{localStorage.setItem('chad-music',want?'on':'off')}catch(e){}};
+  a.addEventListener('play',paint);a.addEventListener('pause',paint);paint();
+  return {tryStart};
+})();
+
 // Daily Chad Protocol (device-local only)
 const ITEMS=[
  ['Lift something heavy','or carry the groceries in one trip'],
@@ -280,20 +299,40 @@ function render(){
 }
 render();
 
-// background: drifting halftone screen + slow scan band
-const cv=document.getElementById('bg'),cx=cv.getContext('2d');let W,H,t=0;
+// background: halftone screen lit by two roaming lights + the cursor, with a slow sweeping beam and scanlines
+const cv=document.getElementById('bg'),cx=cv.getContext('2d');let W,H,t=0,mx=-1e4,my=-1e4,tx=-1e4,ty=-1e4;
 function size(){W=cv.width=innerWidth;H=cv.height=innerHeight}addEventListener('resize',size);size();
+addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY},{passive:true});
 const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const STEP=14;
 (function frame(){
-  t+=reduce?0:0.004;
+  t+=reduce?0:0.005;
+  mx+=(tx-mx)*0.08;my+=(ty-my)*0.08;
   cx.fillStyle='#000';cx.fillRect(0,0,W,H);
-  const lx=W*(0.5+0.25*Math.sin(t)),ly=H*(0.35+0.15*Math.cos(t*0.7)),rm=Math.max(W,H)*0.6;
-  cx.fillStyle='rgba(242,242,242,.22)';
-  for(let y=0;y<H;y+=14){for(let x=(y/14%2)*7;x<W;x+=14){const d=Math.hypot(x-lx,y-ly)/rm;const r=3*(1-d);if(r>0.35){cx.beginPath();cx.arc(x,y,r,0,Math.PI*2);cx.fill()}}}
+  // sweeping beam
+  const ang=t*0.6,bx=W/2,by=H*0.3;
+  const beam=cx.createLinearGradient(bx,by,bx+Math.cos(ang)*W,by+Math.sin(ang)*W);
+  beam.addColorStop(0,'rgba(255,255,255,.06)');beam.addColorStop(1,'rgba(255,255,255,0)');
+  cx.save();cx.translate(bx,by);cx.rotate(ang);cx.fillStyle=beam;cx.translate(-bx,-by);cx.beginPath();cx.moveTo(bx,by);cx.lineTo(bx+W*2,by-H*0.35);cx.lineTo(bx+W*2,by+H*0.35);cx.closePath();cx.fill();cx.restore();
+  // lights
+  const L=[[W*(0.5+0.3*Math.sin(t)),H*(0.35+0.2*Math.cos(t*0.7)),Math.max(W,H)*0.55],
+           [W*(0.5+0.35*Math.cos(t*0.43+2)),H*(0.6+0.25*Math.sin(t*0.9+1)),Math.max(W,H)*0.4],
+           [mx,my,Math.min(W,H)*0.28]];
+  const flick=0.92+0.08*Math.sin(t*37)*Math.sin(t*11);
+  for(let y=0;y<H;y+=STEP){const off=(y/STEP%2)*STEP/2;
+    for(let x=off;x<W;x+=STEP){
+      let v=0;for(const [lx,ly,r] of L){const d=Math.hypot(x-lx,y-ly)/r;if(d<1)v+=(1-d)*(1-d)}
+      v=Math.min(1,v)*flick; if(v<0.06)continue;
+      const rad=0.6+v*3.4; cx.fillStyle=`rgba(242,242,242,${0.12+v*0.55})`;cx.beginPath();cx.arc(x,y,rad,0,Math.PI*2);cx.fill();
+    }}
+  // scanlines
+  cx.fillStyle='rgba(0,0,0,.18)';for(let y=(t*40)%4;y<H;y+=4)cx.fillRect(0,y,W,1);
+  // vignette
+  const vg=cx.createRadialGradient(W/2,H/2,Math.min(W,H)*0.35,W/2,H/2,Math.max(W,H)*0.8);vg.addColorStop(0,'rgba(0,0,0,0)');vg.addColorStop(1,'rgba(0,0,0,.75)');cx.fillStyle=vg;cx.fillRect(0,0,W,H);
   if(!reduce)requestAnimationFrame(frame);
 })();
 
-Promise.all([document.fonts.ready,new Promise(r=>setTimeout(r,800))]).then(()=>{document.getElementById('loader').classList.add('done');document.body.dataset.ready='1'});
+Promise.all([document.fonts.ready,new Promise(r=>setTimeout(r,3000))]).then(()=>{document.getElementById('loader').classList.add('done');document.body.dataset.ready='1';music.tryStart()});
 </script>
 </body>
 </html>
