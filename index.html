@@ -33,12 +33,15 @@ a{color:var(--ink)}
 #loader .t{font-family:Plex,monospace;color:var(--muted);font-size:13px;letter-spacing:.1em}
 main{position:relative;z-index:1}
 .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
-nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+nav{display:flex;flex-direction:column;align-items:center;gap:16px;padding:26px 0 10px}
 nav .brand{font-weight:900;font-style:italic;font-size:28px;letter-spacing:-.03em;display:flex;align-items:center;gap:10px}
 nav .brand img{width:34px;height:34px;border-radius:50%}
-nav .links a{color:var(--muted);text-decoration:none;margin-left:22px;font-size:15px;font-weight:500}
-nav .links a:hover{color:var(--ink)}
-.hero{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding:30px 0 70px}
+nav .links{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+nav .links a{color:var(--ink);text-decoration:none;font-size:14px;font-weight:700;font-style:italic;padding:9px 18px;border:1px solid var(--line);background:var(--panel);transition:background .12s,color .12s}
+nav .links a:hover{background:var(--ink);color:#000}
+nav .links a.primary{background:var(--ink);color:#000;border-color:var(--ink)}
+nav .links a.primary.off{opacity:.4;pointer-events:none}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:30px;align-items:center;padding:40px 0 70px}
 .hero h1{font-weight:900;font-style:italic;font-size:clamp(90px,15vw,190px);line-height:.85;margin:0 0 14px;letter-spacing:-.05em}
 .hero .tag{font-family:Plex,monospace;color:var(--ink2);font-size:16px;margin:0 0 22px}
 .hero .tag b{color:var(--ink);font-weight:500}
@@ -57,6 +60,15 @@ h2{font-weight:900;font-style:italic;font-size:clamp(38px,6vw,64px);margin:0 0 1
 .card h3{margin:0 0 8px;font-size:19px;font-weight:900;font-style:italic}
 .card p{margin:0;color:var(--ink2);font-size:15.5px}
 .card .k{font-family:Plex,monospace;color:var(--muted);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+/* stock steps */
+.steps{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.note{font-family:Plex,monospace;color:var(--muted);font-size:13px;max-width:720px;margin:24px 0 0;line-height:1.6}
+/* gallery */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.meme{display:block;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);transition:transform .15s,border-color .15s}
+.meme:hover{transform:translateY(-4px);border-color:var(--ink)}
+.meme img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.meme span{display:block;padding:12px 14px;font-family:Plex,monospace;font-size:13px;color:var(--ink2)}
 /* protocol */
 .proto{display:grid;grid-template-columns:1fr 300px;gap:18px}
 .list{background:var(--panel);border:1px solid var(--line)}
@@ -98,7 +110,7 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 .end{padding:70px 0 90px;text-align:center}
 .end .big{font-weight:900;font-style:italic;font-size:clamp(70px,14vw,180px);line-height:.85;letter-spacing:-.06em}
 .end .q{font-family:Playfair,serif;font-style:italic;color:var(--muted);font-size:20px;margin-top:14px}
-@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:0}.hero img{max-width:280px;order:-1}.grid3,.tok,.proto{grid-template-columns:1fr}nav .links a{margin-left:14px;font-size:14px}}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:0}.hero img{max-width:280px;order:-1}.grid3,.tok,.proto{grid-template-columns:1fr}nav .links a{padding:8px 12px;font-size:13px}.gal{grid-template-columns:1fr}.steps{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -109,7 +121,7 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 <div class="wrap">
 <nav>
   <div class="brand"><img src="assets/favicon-64.png" alt="">CHAD</div>
-  <div class="links"><a href="#how">How it works</a><a href="#protocol">Protocol</a><a href="#lore">Lore</a><a href="#token">Token</a><a href="#faq">FAQ</a><a id="xlink" href="#" target="_blank" rel="noopener">X</a></div>
+  <div class="links"><a id="navbuy" class="primary off" href="#">Buy CHAD</a><a href="#how">How it works</a><a href="#stocks">Stock pairing</a><a href="#protocol">Protocol</a><a href="#lore">Lore</a><a href="#memes">Memes</a><a href="#token">Token</a><a href="#faq">FAQ</a><a id="xlink" href="#" target="_blank" rel="noopener">X</a></div>
 </nav>
 
 <div class="hero">
@@ -125,7 +137,7 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 
 <section id="how"><div class="wrap">
   <h2>How it works</h2>
-  <p class="sub">Three mechanics. No hidden ones.</p>
+  <p class="sub">One pool, one pair, one place the fees go. Everything else is memes.</p>
   <div class="grid3">
     <div class="card"><div class="k">Pair</div><h3>CHAD / $HIMS</h3><p>CHAD trades against tokenized Hims &amp; Hers stock on Robinhood Chain. One pool, one pair.</p></div>
     <div class="card"><div class="k">Fees</div><h3>Paid in $HIMS</h3><p>Every trade on the pair generates fees, and those fees are paid out in $HIMS — the tokenized share — not in CHAD.</p></div>
@@ -133,9 +145,21 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
   </div>
 </div></section>
 
+<section id="stocks"><div class="wrap">
+  <h2>How stock pairing works</h2>
+  <p class="sub">Robinhood Chain puts real stocks on-chain as tokens. CHAD is built on top of one of them.</p>
+  <div class="steps">
+    <div class="card"><div class="k">Step 1 · The stock token</div><h3>$HIMS exists on-chain</h3><p>Robinhood issues tokenized stocks on Robinhood Chain, its Ethereum L2. The $HIMS token tracks the price of Hims &amp; Hers stock. It is a token that follows the share price — not a share certificate, and it carries no voting rights.</p></div>
+    <div class="card"><div class="k">Step 2 · The pair</div><h3>CHAD is priced in $HIMS</h3><p>Instead of a CHAD / ETH pool, the liquidity pool is CHAD / $HIMS. Buying CHAD means swapping tokenized Hims stock for it. Selling CHAD hands you tokenized Hims stock back.</p></div>
+    <div class="card"><div class="k">Step 3 · The fees</div><h3>Every swap pays in the stock</h3><p>Each trade on the pair takes a small fee. On a stock-paired coin that fee is collected in the paired stock token, so the pool's earnings accumulate as $HIMS rather than as more CHAD.</p></div>
+    <div class="card"><div class="k">Step 4 · What that means</div><h3>Volume turns into stock exposure</h3><p>The more CHAD trades, the more $HIMS the fee side accrues. A memecoin whose fee stream is a tokenized company, not a token it printed itself. If Hims moves, the fee pile moves with it — up or down.</p></div>
+  </div>
+  <p class="note">Plain-English version, not a prospectus. Tokenized stocks are not the same as owning shares, prices can go to zero, and CHAD is a memecoin. Read Robinhood Chain's own docs before you trade anything.</p>
+</div></section>
+
 <section id="protocol"><div class="wrap">
   <h2>Daily Chad Protocol</h2>
-  <p class="sub">Six things. Tick them off. Your streak is saved on this device only — nobody else sees it.</p>
+  <p class="sub">Six habits, reset every midnight. Tick them off, build a streak. Saved on this device only — nobody else sees it.</p>
   <div class="proto">
     <div class="list" id="list"></div>
     <div class="meter">
@@ -149,7 +173,7 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 
 <section id="lore"><div class="wrap">
   <h2>Insane Hims lore</h2>
-  <p class="sub">The company behind the ticker, in order. Every line links to its source.</p>
+  <p class="sub">The company behind the ticker, in order, from subway eggplants to an FDA warning letter. Every line links to its source.</p>
   <div class="tl">
     <div class="ev"><div class="d">NOV 2017</div><h3>Built inside a startup factory</h3><p>Hims wasn't founded in a garage. It was assembled inside Atomic, a San Francisco venture studio co-founded by Andrew Dudum and Jack Abraham, with $7M of seed money. First products: generic Viagra and generic Propecia for millennial men. <a href="https://en.wikipedia.org/wiki/Hims_%26_Hers_Health" target="_blank" rel="noopener">source</a></p></div>
     <div class="ev"><div class="d">2018</div><h3>The eggplant-and-cactus subway ads</h3><p>It got famous by plastering New York subways with eggplants and wilting cacti — ED and hair loss without ever saying the words. Bloomberg called it "the startup of eggplant-and-cactus subway ad fame." <a href="https://twitter.com/ellenhuet/status/1019620241062662144" target="_blank" rel="noopener">source</a></p></div>
@@ -161,9 +185,19 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
   </div>
 </div></section>
 
+<section id="memes"><div class="wrap">
+  <h2>Memes</h2>
+  <p class="sub">Original CHAD art, free to post. Save them, crop them, put your own captions on them.</p>
+  <div class="gal">
+    <a class="meme" href="memes/lambo.png" target="_blank" rel="noopener"><img src="memes/lambo.png" alt="CHAD driving a low black-and-white supercar, speed lines behind him"><span>Driving. Fees paid in $HIMS.</span></a>
+    <a class="meme" href="memes/gym.png" target="_blank" rel="noopener"><img src="memes/gym.png" alt="CHAD pressing a barbell overhead in the gym"><span>Gym. The jaw is built overnight.</span></a>
+    <a class="meme" href="memes/money.png" target="_blank" rel="noopener"><img src="memes/money.png" alt="CHAD at a table fanning out bills with stacks of cash and bills falling"><span>Counting. In $HIMS.</span></a>
+  </div>
+</div></section>
+
 <section id="token"><div class="wrap">
   <h2>Token</h2>
-  <p class="sub">These fields fill in at launch. Until then they stay empty — no placeholder numbers.</p>
+  <p class="sub">Contract, pool and chart appear here the moment CHAD deploys. Until then the fields stay empty — no placeholder numbers, ever.</p>
   <div class="tok">
     <div class="card">
       <div class="row"><b>Name</b><span>CHAD</span></div>
@@ -183,6 +217,7 @@ details p{color:var(--ink2);margin:10px 0 0;max-width:680px}
 
 <section id="faq"><div class="wrap">
   <h2>FAQ</h2>
+  <p class="sub">Short answers. If yours isn't here, ask on X.</p>
   <details open><summary>What does "paired to $HIMS" mean?</summary><p>The liquidity pool is CHAD against tokenized Hims &amp; Hers stock on Robinhood Chain. Trading fees on the pair are paid out in $HIMS, not in CHAD.</p></details>
   <details><summary>Is this affiliated with Hims &amp; Hers?</summary><p>No. CHAD is a community memecoin. Hims &amp; Hers did not make it, endorse it, or hear about it. The timeline above is public record.</p></details>
   <details><summary>Where is the contract?</summary><p>There isn't one yet. The address, pool and chart links appear in the Token section the moment it deploys, and are posted as the first reply to the launch tweet.</p></details>
@@ -205,7 +240,7 @@ const DATA = {}; // no live numbers pre-launch
 (function(){
   const $=id=>document.getElementById(id);
   if(CONFIG.x){$('xlink').href=CONFIG.x}
-  if(CONFIG.pool){$('pool').href=CONFIG.pool;$('pool').classList.remove('off');$('buy').href=CONFIG.pool;$('buy').classList.remove('off');$('pool-short').textContent='open';$('pool-short').classList.remove('zero')}
+  if(CONFIG.pool){$('pool').href=CONFIG.pool;$('pool').classList.remove('off');$('buy').href=CONFIG.pool;$('buy').classList.remove('off');$('navbuy').href=CONFIG.pool;$('navbuy').classList.remove('off');$('pool-short').textContent='open';$('pool-short').classList.remove('zero')}
   if(CONFIG.chart){$('chart').href=CONFIG.chart;$('chart').classList.remove('off')}
   if(CONFIG.ca){$('ca').textContent=CONFIG.ca;$('ca').classList.add('live');$('ca-short').textContent=CONFIG.ca.slice(0,6)+'…'+CONFIG.ca.slice(-4);$('ca-short').classList.remove('zero');
     $('ca').onclick=()=>{navigator.clipboard&&navigator.clipboard.writeText(CONFIG.ca);$('ca').textContent='copied';setTimeout(()=>$('ca').textContent=CONFIG.ca,900)}}
